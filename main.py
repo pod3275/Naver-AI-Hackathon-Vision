@@ -227,8 +227,8 @@ def preprocess_query(queries, index, size):
     
 # backbone model: ResNet50 with Generalized Mean Pooling
 def convnet_model_():
-    vgg_model = ResNet50(weights="imagenet", include_top=False, input_shape = (224,224,3))
-    x = vgg_model.output
+    backbone_model = ResNet50(weights="imagenet", include_top=False, input_shape = (224,224,3))
+    x = backbone_model.output
     x = GeMPooling2D()(x)
     x = Lambda(lambda  x: K.l2_normalize(x,axis=1))(x)
     '''
@@ -236,7 +236,7 @@ def convnet_model_():
                               bias_initializer='zeros')(x)
     x = Lambda(lambda x: K.l2_normalize(x, axis=1), name='pca_norm')(x)
     '''
-    convnet_model = Model(inputs=vgg_model.input, outputs=x)
+    convnet_model = Model(inputs=backbone_model.input, outputs=x)
     return convnet_model
 
 #---------------------------------------------------------------------------------
